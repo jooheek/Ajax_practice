@@ -16,7 +16,7 @@ function getWeather(woeid){
         .then(data =>{
             //console.log(data);
             const today = data.consolidated_weather[0];
-            console.log(`tempuratures in ${data.title} stay between ${today.min_temp} and ${today.max_temp}`)
+            console.log(`Temperatures in ${data.title} stay between ${today.min_temp} and ${today.max_temp}`)
             //오늘 San Francisco의 최고기온, 최저기온을 알아온다.
         })
         //data를 다룰 then 메소드를 생성함
@@ -24,3 +24,31 @@ function getWeather(woeid){
 }
 getWeather(2487956);
 getWeather(44418);
+
+async function getWeatherAW(woeid){
+    try{
+        const result = await fetch(`https://www.metaweather.com/api/location/${woeid}/`);
+        const data = await result.json();
+        console.log(data);
+
+        const tomorrow = data.consolidated_weather[1];
+        console.log(`Temperatures tomorrow in ${data.title}
+                        stay between ${tomorrow.min_temp} and ${tomorrow.max_temp}`)
+        return data;
+        //async 결과값을 return 하면 pending 이뜬다.
+        //console.log(dataLondon);가 async function getWeatherAW(woeid){}보다 더 빨리 실행되기 때문
+    }catch (error){
+        alert(error);
+    }
+
+}
+getWeatherAW(2487956);
+
+let dataLondon ;
+getWeatherAW(44418).then(data=> {
+    dataLondon = data
+    console.log(dataLondon);
+});
+//이렇게 하면 작동하는 이유
+//async function getWeatherAW(woeid){} 함수가 promise를 반환하고
+// async function에서 반환된 데이터가 promise의 result 값이 되기 때문이다.
